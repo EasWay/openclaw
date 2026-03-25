@@ -40,7 +40,29 @@ export function buildDefaultControlUiAllowedOrigins(params: {
   if (params.bind === "custom" && customBindHost) {
     origins.add(`http://${customBindHost}:${params.port}`);
   }
+
+  const renderOrigin = getRenderExternalOrigin();
+  if (renderOrigin) {
+    origins.add(renderOrigin);
+  }
+
   return [...origins];
+}
+
+export function getRenderExternalOrigin(): string | undefined {
+  const candidate = process.env.RENDER_EXTERNAL_URL?.trim();
+  if (!candidate) {
+    return undefined;
+  }
+  try {
+    const parsed = new URL(candidate);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return undefined;
+    }
+    return `${parsed.protocol}//${parsed.host}`;
+  } catch {
+    return undefined;
+  }
 }
 
 export function ensureControlUiAllowedOriginsForNonLoopbackBind(
