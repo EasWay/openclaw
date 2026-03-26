@@ -15,4 +15,4 @@ $OPENCLAW_BIN config set gateway.controlUi.dangerouslyAllowHostHeaderOriginFallb
 # Disable device pairing requirement — token auth is sufficient on Render.
 $OPENCLAW_BIN config set gateway.controlUi.dangerouslyDisableDeviceAuth true
 
-exec $OPENCLAW_BIN gateway run --bind lan --port "$PORT"
+exec OPENCLAW_SKIP_CANVAS_HOST=1 $OPENCLAW_BIN gateway run --bind lan --port "$PORT"
