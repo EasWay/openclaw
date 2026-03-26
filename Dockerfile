@@ -84,6 +84,7 @@ RUN install -d -m 0755 "$COREPACK_HOME" && corepack enable && \
 RUN ln -sf /app/openclaw.mjs /usr/local/bin/openclaw && chmod 755 /app/openclaw.mjs
 
 ENV NODE_ENV=production
+ENV NODE_OPTIONS=--max-old-space-size=384
 ENV PORT=8080
 ENV OPENCLAW_GATEWAY_PORT=8080
 USER node
