@@ -83,13 +83,11 @@ RUN install -d -m 0755 "$COREPACK_HOME" && corepack enable && \
 RUN ln -sf /app/openclaw.mjs /usr/local/bin/openclaw && chmod 755 /app/openclaw.mjs
 
 ENV NODE_ENV=production
-# Default port for Render is usually 10000 if not specified
-ENV PORT=18789
+ENV PORT=8080
+ENV OPENCLAW_GATEWAY_PORT=8080
 USER node
 
-# Updated Healthcheck to use the dynamic PORT variable
 HEALTHCHECK --interval=3m --timeout=10s --start-period=15s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:' + (process.env.PORT || 18789) + '/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+  CMD curl -f http://localhost:${PORT:-8080}/health || exit 1
 
-# Updated CMD to use --bind instead of --host
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
+CMD ["node", "openclaw.mjs", "gateway", "run", "--allow-unconfigured", "--bind", "lan", "--port", "8080"]
