@@ -75,6 +75,7 @@ COPY --from=runtime-assets --chown=node:node /app/openclaw.mjs .
 COPY --from=runtime-assets --chown=node:node /app/extensions ./extensions
 COPY --from=runtime-assets --chown=node:node /app/skills ./skills
 COPY --from=runtime-assets --chown=node:node /app/docs ./docs
+COPY --chmod=755 scripts/docker/render-entrypoint.sh /app/render-entrypoint.sh
 
 ENV OPENCLAW_BUNDLED_PLUGINS_DIR=/app/extensions
 ENV COREPACK_HOME=/usr/local/share/corepack
@@ -90,4 +91,4 @@ USER node
 HEALTHCHECK --interval=3m --timeout=10s --start-period=15s --retries=3 \
   CMD curl -f http://localhost:${PORT:-8080}/health || exit 1
 
-CMD ["node", "openclaw.mjs", "gateway", "run", "--allow-unconfigured", "--bind", "lan", "--port", "8080"]
+CMD ["/app/render-entrypoint.sh"]
